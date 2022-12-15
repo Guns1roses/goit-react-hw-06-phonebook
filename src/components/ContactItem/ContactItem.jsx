@@ -1,44 +1,39 @@
 import PropTypes from 'prop-types';
 import { Contact, IconUser, Item, Button } from './ContactItem.styled';
 import { RiDeleteBinLine } from 'react-icons/ri';
-import { useContext, memo } from 'react';
-import deleteContactContext from '../deleteContactContext';
+import { memo } from 'react';
+import { useContacts } from 'hooks/useContacts';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const ContactItem = ({ id, name, number }) => {
-  const deleteHandler = useContext(deleteContactContext);
+  const { removeContact } = useContacts();
+
+  const handleRemoveContact = id => {
+    removeContact(id);
+    Notify.success(`Contact successfully removed`);
+  };
+
   return (
     <Item>
       <Contact>
         <IconUser />
         {name} : {number}
       </Contact>
-      <Button onClick={() => deleteHandler(id)} title="Delete" type="button">
+      <Button
+        onClick={() => handleRemoveContact(id)}
+        title="Delete"
+        type="button"
+      >
         <RiDeleteBinLine />
       </Button>
     </Item>
   );
 };
 
-// const ContactItem = ({ id, name, number, deleteHandler }) => {
-//   return (
-//     <Item>
-//       <Contact>
-//         <IconUser />
-//         {name} : {number}
-//       </Contact>
-//       <Button onClick={() => deleteHandler(id)} title="Delete" type="button">
-//         <RiDeleteBinLine />
-//       </Button>
-//     </Item>
-//   );
-// };
-
 export default memo(ContactItem);
-// export default ContactItem;
 
 ContactItem.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   number: PropTypes.string,
-  deleteHandler: PropTypes.func,
 };

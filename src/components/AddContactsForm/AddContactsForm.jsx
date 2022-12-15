@@ -1,6 +1,4 @@
 import { Formik, Form } from 'formik';
-import * as yup from 'yup';
-import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -10,40 +8,13 @@ import {
   Input,
   Label,
 } from './AddContactsForm.styled';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { useForm } from '../../hooks/useForm';
+import { useToggle } from 'hooks/useToggle';
 
-const nameRegExp = /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/;
+const AddContactsForm = () => {
+  const { initialValues, schema, handleSubmit } = useForm();
+  const { toggleForm } = useToggle();
 
-const phoneRegExp =
-  /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/;
-
-const schema = yup.object().shape({
-  name: yup.string().min(3).matches(nameRegExp, 'Name is not valid').required(),
-  number: yup
-    .string()
-    .matches(phoneRegExp, 'Phone number is not valid')
-    .required(),
-});
-
-const initialValues = {
-  id: '',
-  name: '',
-  number: '',
-};
-
-const AddContactsForm = ({ addContact, contacts, toggle }) => {
-  const handleSubmit = (values, { resetForm }) => {
-    const isInclude = contacts.some(
-      contact => contact.name.toLowerCase() === values.name.toLowerCase()
-    );
-    if (isInclude) {
-      Notify.failure(`${values.name} is already in contacts`);
-      return;
-    }
-    values.id = nanoid(6);
-    addContact(values);
-    resetForm();
-  };
   return (
     <Formik
       initialValues={initialValues}
@@ -76,7 +47,7 @@ const AddContactsForm = ({ addContact, contacts, toggle }) => {
             </Label>
           </FormInner>
           <Button type="submit">Add contact</Button>
-          <Button onClick={() => toggle('isOpenForm')} type="button">
+          <Button onClick={toggleForm} type="button">
             Cancel
           </Button>
         </Form>
@@ -88,7 +59,5 @@ const AddContactsForm = ({ addContact, contacts, toggle }) => {
 export default AddContactsForm;
 
 AddContactsForm.propTypes = {
-  onSubmit: PropTypes.func,
-  contacts: PropTypes.array,
   toggle: PropTypes.func,
 };

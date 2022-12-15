@@ -24,7 +24,7 @@ export default ContactsList;
 
 ContactsList.propTypes = {
   contacts: PropTypes.arrayOf(PropTypes.object),
-  deleteHandler: PropTypes.func,
+  // deleteHandler: PropTypes.func,
 };
 
 // const ContactsList = ({ contacts, deleteHandler }) => {
